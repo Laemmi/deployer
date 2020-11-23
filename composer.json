@@ -1,0 +1,32 @@
+{
+    "name": "laemmi/deployer",
+    "description": "3rd party deployer recipes",
+    "type": "library",
+    "homepage": "https://www.spacerabbit.de",
+    "license": "MIT",
+    "authors": [{
+        "name": "Michael Lämmlein",
+        "email": "laemmi@spacerabbit.de",
+        "role": "Maintainer"
+    }],
+    "support": {
+        "source": "https://github.com/Laemmi/deployer"
+    },
+    "autoload": {
+        "files": [
+            "autoload.php"
+        ]
+    },
+    "require": {
+        "php": "^7.3",
+        "deployer/deployer": "^6.8",
+        "deployer/recipes": "^6.2",
+        "gordalina/cachetool": "^5.1"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    }
+}
