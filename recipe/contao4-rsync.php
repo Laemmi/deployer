@@ -32,6 +32,9 @@ namespace Deployer;
 require 'recipe/contao4.php';
 require 'recipe/rsync.php';
 
+// Settings
+set('ssh_multiplexing', true);
+
 add('rsync', [
     'include' => [
         '/assets/',

@@ -24,9 +24,6 @@
         "gordalina/cachetool": "^5.1"
     },
     "config": {
-        "preferred-install": {
-            "*": "dist"
-        },
         "sort-packages": true
     }
 }
