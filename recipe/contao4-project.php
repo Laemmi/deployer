@@ -27,14 +27,17 @@
  * @since      23.11.20
  */
 
+declare(strict_types=1);
+
 namespace Deployer;
 
 require 'recipe/contao4.php';
 require 'recipe/rsync.php';
 
 // Settings
-set('ssh_multiplexing', true);
-
+set('install_dir', 'www');
+set('bin/contao-console', '{{release_path}}/vendor/contao/manager-bundle/bin/contao-console');
+set('rsync_src', './{{install_dir}}');
 add('rsync', [
     'include' => [
         '/assets/',
@@ -45,11 +48,47 @@ add('rsync', [
         '/web/'
     ],
     'exclude' => [
-        '/*'
+        '/*',
+        '.gitkeep',
+        '.DS_Store'
     ],
     'flags' => 'rlz'
 ]);
 
+// User tasks
 task('deploy:update_code', [
     'rsync'
 ]);
+
+task(
+    'build',
+    function () {
+        set('release_path', './{{install_dir}}');
+        set('deploy_path', '{{release_path}}');
+        invoke('deploy:vendors');
+    }
+)->desc('Build task local')->local();
+
+task('release', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'deploy:update_code',
+    'deploy:shared',
+    'deploy:writable',
+    'contao:console:cache:clear',
+    'contao:console:migrate',
+    'contao:console:symlinks',
+    'deploy:symlink',
+    'deploy:unlock',
+])->desc('Release task');
+
+task('deploy', [
+    'build',
+    'release',
+    'cleanup',
+    'success'
+])->desc('Deploy task');
+
+after('deploy:failed', 'deploy:unlock');

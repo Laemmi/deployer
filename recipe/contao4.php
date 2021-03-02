@@ -32,10 +32,8 @@ declare(strict_types=1);
 namespace Deployer;
 
 require 'recipe/common.php';
-require 'recipe/cachetool.php';
 
 // Settings
-set('bin/cachetool', '{{release_path}}/vendor/bin/cachetool');
 set('bin/contao-console', '{{release_path}}/bin/contao-console');
 
 set('shared_dirs', [

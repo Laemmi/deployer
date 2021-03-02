@@ -18,7 +18,7 @@
         ]
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.4",
         "deployer/deployer": "^6.8",
         "deployer/recipes": "^6.2",
         "gordalina/cachetool": "^5.1"
