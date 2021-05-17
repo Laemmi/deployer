@@ -36,21 +36,28 @@ require 'recipe/rsync.php';
 
 // Settings
 set('install_dir', 'www');
-set('bin/contao-console', '{{release_path}}/vendor/contao/manager-bundle/bin/contao-console');
-set('rsync_src', './{{install_dir}}');
+set('bin/contao-console', '{{release_path}}/{{install_dir}}/vendor/contao/manager-bundle/bin/contao-console');
+set('rsync_src', getcwd());
 add('rsync', [
     'include' => [
-        '/assets/',
-        '/files/',
-        '/system/',
-        '/templates/',
+        '/config/',
         '/vendor/',
-        '/web/'
+        '/{{install_dir}}/',
+        '/{{install_dir}}/assets/',
+        '/{{install_dir}}/files/',
+        '/{{install_dir}}/system/',
+        '/{{install_dir}}/templates/',
+        '/{{install_dir}}/vendor/',
+        '/{{install_dir}}/web/'
     ],
     'exclude' => [
         '/*',
         '.gitkeep',
-        '.DS_Store'
+        '.gitignore',
+        '.DS_Store',
+        'LICENSE',
+        'README.md',
+        '/{{install_dir}}/*'
     ],
     'flags' => 'rlz'
 ]);
@@ -63,8 +70,7 @@ task('deploy:update_code', [
 task(
     'build',
     function () {
-        set('release_path', './{{install_dir}}');
-        set('deploy_path', '{{release_path}}');
+        set('release_path', getcwd() . '/{{install_dir}}');
         invoke('deploy:vendors');
     }
 )->desc('Build task local')->local();
