@@ -34,21 +34,22 @@ namespace Deployer;
 require 'recipe/common.php';
 
 // Settings
+set('install_dir', '');
 set('bin/contao-console', '{{release_path}}/bin/contao-console');
 
 set('shared_dirs', [
-    'config',
-    'files/shared',
-    'var/logs',
-    'web/share',
+    '{{install_dir}}/config',
+    '{{install_dir}}/files/shared',
+    '{{install_dir}}/var/logs',
+    '{{install_dir}}/web/share',
 ]);
 
 set('shared_files', [
-    'system/config/localconfig.php',
+    '{{install_dir}}/system/config/localconfig.php',
 ]);
 
 set('writable_dirs', [
-    'var'
+    '{{install_dir}}/var'
 ]);
 
 // Tasks
@@ -64,7 +65,7 @@ task('contao:console:symlinks', '
     {{bin/php}} {{bin/contao-console}} contao:symlinks --no-interaction --env=prod
 ')->desc('Execute contao console symlinks');
 
-task('deploy', [
+task('release', [
     'deploy:info',
     'deploy:prepare',
     'deploy:lock',
@@ -78,6 +79,10 @@ task('deploy', [
     'contao:console:symlinks',
     'deploy:symlink',
     'deploy:unlock',
+])->desc('Deploy your Contao project');
+
+task('deploy', [
+    'release',
     'cleanup',
     'success'
-])->desc('Deploy your Contao project');
+])->desc('Deploy task');
