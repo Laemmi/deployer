@@ -36,7 +36,7 @@ require 'recipe/rsync.php';
 
 // Settings
 set('install_dir', 'www');
-set('bin/contao-console', '{{release_path}}/{{install_dir}}/vendor/contao/manager-bundle/bin/contao-console');
+set('bin/contao-console', 'vendor/bin/contao-console');
 set('rsync_src', getcwd());
 add('rsync', [
     'include' => [
@@ -62,6 +62,16 @@ add('rsync', [
     'flags' => 'rlz'
 ]);
 
+// Prepare shared / writable
+(function () {
+    $callback = function ($val) {
+        return '{{install_dir}}/' . $val;
+    };
+    set('shared_dirs', array_map($callback, get('shared_dirs')));
+    set('shared_files', array_map($callback, get('shared_files')));
+    set('writable_dirs', array_map($callback, get('writable_dirs')));
+})();
+
 // User tasks
 task('deploy:update_code', [
     'rsync'
@@ -75,6 +85,18 @@ task(
     }
 )->desc('Build task local')->local();
 
+task(
+    'contao:console:tasks',
+    function () {
+        $release_path = get('release_path');
+        set('release_path', $release_path . '/{{install_dir}}');
+        invoke('contao:console:cache:clear');
+        invoke('contao:console:migrate');
+        invoke('contao:console:symlinks');
+        set('release_path', $release_path);
+    }
+)->desc('Contao console tasks');
+
 task('release', [
     'deploy:info',
     'deploy:prepare',
@@ -83,9 +105,7 @@ task('release', [
     'deploy:update_code',
     'deploy:shared',
     'deploy:writable',
-    'contao:console:cache:clear',
-    'contao:console:migrate',
-    'contao:console:symlinks',
+    'contao:console:tasks',
     'deploy:symlink',
     'deploy:unlock',
 ])->desc('Release task');

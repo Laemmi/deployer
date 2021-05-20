@@ -34,22 +34,21 @@ namespace Deployer;
 require 'recipe/common.php';
 
 // Settings
-set('install_dir', '');
-set('bin/contao-console', '{{release_path}}/bin/contao-console');
+set('bin/contao-console', 'bin/contao-console');
 
 set('shared_dirs', [
-    '{{install_dir}}/config',
-    '{{install_dir}}/files/shared',
-    '{{install_dir}}/var/logs',
-    '{{install_dir}}/web/share',
+    'config',
+    'files/shared',
+    'var/logs',
+    'web/share',
 ]);
 
 set('shared_files', [
-    '{{install_dir}}/system/config/localconfig.php',
+    'system/config/localconfig.php',
 ]);
 
 set('writable_dirs', [
-    '{{install_dir}}/var'
+    'var'
 ]);
 
 // Tasks
