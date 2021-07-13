@@ -21,7 +21,7 @@
         "php": "^7.4",
         "deployer/deployer": "^6.8",
         "deployer/recipes": "^6.2",
-        "gordalina/cachetool": "^5.1"
+        "gordalina/cachetool": "^6.5"
     },
     "config": {
         "sort-packages": true
