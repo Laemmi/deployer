@@ -33,10 +33,13 @@ namespace Deployer;
 
 require 'recipe/contao4.php';
 require 'recipe/rsync.php';
+require 'recipe/cachetool.php';
 
 // Settings
 set('install_dir', 'www');
+set('public_path', '{{release_path}}/{{install_dir}}/web');
 set('bin/contao-console', 'vendor/bin/contao-console');
+set('bin/cachetool', 'vendor/bin/cachetool');
 set('rsync_src', getcwd());
 add('rsync', [
     'include' => [
@@ -107,6 +110,7 @@ task('release', [
     'deploy:writable',
     'contao:console:tasks',
     'deploy:symlink',
+    'cachetool:clear:opcache',
     'deploy:unlock',
 ])->desc('Release task');
 
