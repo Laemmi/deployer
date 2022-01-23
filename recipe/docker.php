@@ -31,19 +31,15 @@ declare(strict_types=1);
 
 namespace Deployer;
 
-require 'recipe/common.php';
-
 // Settings
 set('docker-compose.yml', 'docker-compose.yml');
+set('CI_REGISTRY_PASSWORD', getenv('CI_REGISTRY_PASSWORD'));
+set('CI_REGISTRY_USER', getenv('CI_REGISTRY_USER'));
+set('CI_REGISTRY', getenv('CI_REGISTRY'));
 
-set('env', [
-    'CI_REGISTRY_PASSWORD' => getenv('CI_REGISTRY_PASSWORD'),
-    'CI_REGISTRY_USER' => getenv('CI_REGISTRY_USER'),
-    'CI_REGISTRY' => getenv('CI_REGISTRY'),
-]);
-
+// Tasks
 task('deploy:docker:login','
-    echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+    echo {{CI_REGISTRY_PASSWORD}} | docker login -u {{CI_REGISTRY_USER}} --password-stdin {{CI_REGISTRY}}
 ')->desc('Deploy docker login');
 
 task('deploy:docker-compose:pull','

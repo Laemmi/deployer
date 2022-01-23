@@ -34,6 +34,7 @@ namespace Deployer;
 require 'recipe/contao4.php';
 require 'recipe/rsync.php';
 require 'recipe/cachetool.php';
+require 'recipe/docker.php';
 
 // Settings
 set('install_dir', 'www');
