@@ -59,7 +59,7 @@ set('writable_dirs', [
 set('bin/console', '{{bin/php}} {{release_or_current_path}}/vendor/bin/contao-console');
 
 set('console_options', function () {
-    return '--no-interaction --env=prod';
+    return '--no-interaction';
 });
 
 // Settings rsync
