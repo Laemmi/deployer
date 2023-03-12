@@ -31,10 +31,14 @@ declare(strict_types=1);
 
 namespace Deployer;
 
-require 'recipe/common.php';
+import('recipe/common.php');
+import('contrib/rsync.php');
+import('contrib/cachetool.php');
 
-// Settings
-set('bin/contao-console', 'bin/contao-console');
+add('recipes', ['contao4']);
+
+// Settings common
+set('keep_releases', 3);
 
 set('shared_dirs', [
     'config',
@@ -51,37 +55,63 @@ set('writable_dirs', [
     'var'
 ]);
 
+// Settings Contao
+set('bin/console', '{{bin/php}} {{release_or_current_path}}/vendor/bin/contao-console');
+
+set('console_options', function () {
+    return '--no-interaction --env=prod';
+});
+
+// Settings rsync
+set('rsync_src', getcwd());
+add('rsync', [
+    'include' => [
+        '/assets/',
+        '/files/',
+        '/system/',
+        '/templates/',
+        '/vendor/',
+        '/var/',
+        '/web/',
+        '/composer.json',
+        '/composer.lock',
+    ],
+    'exclude' => [
+        '/*',
+        '.gitkeep',
+        '.gitignore',
+        '.DS_Store',
+        'LICENSE',
+        'README.md',
+    ],
+    'flags' => 'rlz'
+]);
+
 // Tasks
-task('contao:console:cache:clear', '
-    {{bin/php}} {{bin/contao-console}} cache:clear --no-interaction --env=prod
-')->desc('Execute contao console cache:clear');
+task('contao:cache:clear', function () {
+    run('{{bin/console}} cache:clear {{console_options}}');
+});
 
-task('contao:console:migrate', '
-    {{bin/php}} {{bin/contao-console}} contao:migrate --no-interaction --env=prod
-')->desc('Execute contao console migrate');
+task('contao:migrate', function () {
+    run('{{bin/console}} contao:migrate {{console_options}}');
+});
 
-task('contao:console:symlinks', '
-    {{bin/php}} {{bin/contao-console}} contao:symlinks --no-interaction --env=prod
-')->desc('Execute contao console symlinks');
+task('contao:symlinks', function () {
+    run('{{bin/console}} contao:symlinks {{console_options}}');
+});
 
-task('release', [
-    'deploy:info',
-    'deploy:prepare',
-    'deploy:lock',
-    'deploy:release',
-    'deploy:update_code',
-    'deploy:shared',
-    'deploy:vendors',
-    'deploy:writable',
-    'contao:console:cache:clear',
-    'contao:console:migrate',
-    'contao:console:symlinks',
-    'deploy:symlink',
-    'deploy:unlock',
-])->desc('Deploy your Contao project');
-
+desc('Deploy the project');
 task('deploy', [
-    'release',
-    'cleanup',
-    'success'
-])->desc('Deploy task');
+    'deploy:prepare',
+    'contao:cache:clear',
+    'contao:migrate',
+    'contao:symlinks',
+    'deploy:publish',
+]);
+
+task('deploy:vendors')->disable();
+task('deploy:update_code')->disable();
+
+after('deploy:update_code', 'rsync');
+after('deploy:symlink', 'cachetool:clear:opcache');
+after('deploy:failed', 'deploy:unlock');

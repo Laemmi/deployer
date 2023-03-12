@@ -18,10 +18,8 @@
         ]
     },
     "require": {
-        "php": "^7.4",
-        "deployer/deployer": "^6.8",
-        "deployer/recipes": "^6.2",
-        "gordalina/cachetool": "^6.5"
+        "php": "^8.0",
+        "deployer/deployer": "^7.2"
     },
     "config": {
         "sort-packages": true
