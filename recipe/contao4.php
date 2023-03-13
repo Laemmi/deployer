@@ -89,15 +89,15 @@ add('rsync', [
 
 // Tasks
 task('contao:cache:clear', function () {
-    run('{{bin/console}} cache:clear {{console_options}}');
+    run('cd {{release_or_current_path}} && {{bin/console}} cache:clear {{console_options}}');
 });
 
 task('contao:migrate', function () {
-    run('{{bin/console}} contao:migrate {{console_options}}');
+    run('cd {{release_or_current_path}} && {{bin/console}} contao:migrate {{console_options}}');
 });
 
 task('contao:symlinks', function () {
-    run('{{bin/console}} contao:symlinks {{console_options}}');
+    run('cd {{release_or_current_path}} && {{bin/console}} contao:symlinks {{console_options}}');
 });
 
 desc('Deploy the project');
