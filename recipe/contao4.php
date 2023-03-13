@@ -41,18 +41,25 @@ add('recipes', ['contao4']);
 set('keep_releases', 3);
 
 set('shared_dirs', [
-    'config',
-    'files/shared',
-    'var/logs',
+    'assets/images',
+    'files',
     'web/share',
+    'system/config',
+    'var/backups',
+    'var/logs',
 ]);
 
 set('shared_files', [
+    '.env.local',
+    'config/parameters.yml',
     'system/config/localconfig.php',
 ]);
 
 set('writable_dirs', [
-    'var'
+    'var',
+    'var/cache',
+    'var/log',
+    'var/sessions',
 ]);
 
 // Settings Contao
