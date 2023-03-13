@@ -52,7 +52,6 @@ set('shared_dirs', [
 set('shared_files', [
     '.env.local',
     'config/parameters.yml',
-    'system/config/localconfig.php',
 ]);
 
 set('writable_dirs', [
