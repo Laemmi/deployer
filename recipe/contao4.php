@@ -41,8 +41,9 @@ add('recipes', ['contao4']);
 set('keep_releases', 3);
 
 set('shared_dirs', [
+    'config',
     'assets/images',
-    'files',
+    'files/shared',
     'web/share',
     'system/config',
     'var/backups',
@@ -51,7 +52,7 @@ set('shared_dirs', [
 
 set('shared_files', [
     '.env.local',
-    'config/parameters.yml',
+//    'config/parameters.yml',
 ]);
 
 set('writable_dirs', [
