@@ -31,43 +31,21 @@ declare(strict_types=1);
 
 namespace Deployer;
 
-import('recipe/common.php');
+import('recipe/contao.php');
 import('contrib/rsync.php');
 import('contrib/cachetool.php');
 
-add('recipes', ['contao4.13']);
-
-// Settings common
-set('keep_releases', 3);
+add('recipes', ['contao-rsync']);
 
 set('shared_dirs', [
-    'config',
     'assets/images',
+    'contao-manager',
     'files/shared',
-    'public/share',
+    '{{public_path}}/share',
     'system/config',
     'var/backups',
     'var/logs',
 ]);
-
-set('shared_files', [
-    '.env.local',
-//    'config/parameters.yml',
-]);
-
-set('writable_dirs', [
-    'var',
-    'var/cache',
-    'var/log',
-    'var/sessions',
-]);
-
-// Settings Contao
-set('bin/console', '{{bin/php}} {{release_or_current_path}}/vendor/bin/contao-console');
-
-set('console_options', function () {
-    return '--no-interaction';
-});
 
 // Settings rsync
 set('rsync_src', getcwd());
@@ -75,11 +53,10 @@ add('rsync', [
     'include' => [
         '/assets/',
         '/files/',
+        '/public/',
         '/system/',
         '/templates/',
         '/vendor/',
-        '/var/',
-        '/public/',
         '/composer.json',
         '/composer.lock',
     ],
@@ -94,25 +71,13 @@ add('rsync', [
     'flags' => 'rlz'
 ]);
 
-// Tasks
-task('contao:cache:clear', function () {
-    run('cd {{release_or_current_path}} && {{bin/console}} cache:clear {{console_options}}');
-});
-
-task('contao:migrate', function () {
-    run('cd {{release_or_current_path}} && {{bin/console}} contao:migrate {{console_options}}');
-});
-
-task('contao:symlinks', function () {
-    run('cd {{release_or_current_path}} && {{bin/console}} contao:symlinks {{console_options}}');
-});
-
 desc('Deploy the project');
 task('deploy', [
     'deploy:prepare',
-    'contao:cache:clear',
+    'deploy:cache:clear',
+    'contao:maintenance:enable',
     'contao:migrate',
-    'contao:symlinks',
+    'contao:maintenance:disable',
     'deploy:publish',
 ]);
 
