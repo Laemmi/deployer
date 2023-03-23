@@ -71,6 +71,11 @@ add('rsync', [
     'flags' => 'rlz'
 ]);
 
+desc('Create symlinks');
+task('contao:symlinks', function () {
+    run('{{bin/console}} contao:symlinks {{console_options}}');
+});
+
 desc('Deploy the project');
 task('deploy', [
     'deploy:prepare',
