@@ -77,6 +77,7 @@ task('deploy', [
     'deploy:cache:clear',
     'contao:maintenance:enable',
     'contao:migrate',
+    'contao:symlinks',
     'contao:maintenance:disable',
     'deploy:publish',
 ]);
