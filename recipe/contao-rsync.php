@@ -37,6 +37,8 @@ import('contrib/cachetool.php');
 
 add('recipes', ['contao-rsync']);
 
+add('shared_files', ['config/config.yml']);
+
 set('shared_dirs', [
     'assets/images',
     'contao-manager',
