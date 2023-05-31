@@ -59,6 +59,7 @@ add('rsync', [
         '/system/',
         '/templates/',
         '/vendor/',
+        '/.env',
         '/composer.json',
         '/composer.lock',
     ],
