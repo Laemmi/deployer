@@ -31,32 +31,39 @@ declare(strict_types=1);
 
 namespace Deployer;
 
+import('recipe/common.php');
+
+add('recipes', ['laemmis-docker-compose']);
+
 // Settings
 set('docker-compose.yml', 'docker-compose.yml');
+set('container_name', 'app');
 set('CI_REGISTRY_PASSWORD', getenv('CI_REGISTRY_PASSWORD'));
 set('CI_REGISTRY_USER', getenv('CI_REGISTRY_USER'));
 set('CI_REGISTRY', getenv('CI_REGISTRY'));
 
-// Tasks
-task('deploy:docker:login','
-    echo {{CI_REGISTRY_PASSWORD}} | docker login -u {{CI_REGISTRY_USER}} --password-stdin {{CI_REGISTRY}}
-')->desc('Deploy docker login');
+task('deploy:docker:login', function () {
+    run('echo {{CI_REGISTRY_PASSWORD}} | docker login -u {{CI_REGISTRY_USER}} --password-stdin {{CI_REGISTRY}}');
+});
 
-task('deploy:docker-compose:pull','
-    docker-compose -f {{docker-compose.yml}} pull app
-')->desc('Deploy docker-compose pull');
+task('deploy:docker-compose:pull', function () {
+    cd('{{deploy_path}}');
+    run('docker-compose -f {{docker-compose.yml}} pull {{container_name}}');
+});
 
-task('deploy:docker-compose:up','
-    docker-compose -f {{docker-compose.yml}} up -d
-')->desc('Deploy docker-compose up');
+task('deploy:docker-compose:up', function () {
+    cd('{{deploy_path}}');
+    run('docker-compose -f {{docker-compose.yml}} up -d');
+});
 
-task('deploy:docker-compose:restart','
-    docker-compose -f {{docker-compose.yml}} restart
-')->desc('Deploy docker-compose restart');
+task('deploy:docker-compose:restart', function () {
+    cd('{{deploy_path}}');
+    run('docker-compose -f {{docker-compose.yml}} restart');
+});
 
-task('deploy:docker-compose', function () {
-    invoke('deploy:docker:login');
-    invoke('deploy:docker-compose:pull');
-    invoke('deploy:docker-compose:up');
-//    invoke('deploy:docker-compose:restart');
-})->desc('Deploy with docker-compose');
+task('deploy:docker-compose', [
+    'deploy:docker:login',
+    'deploy:docker-compose:pull',
+    'deploy:docker-compose:up',
+//    'deploy:docker-compose:restart',
+]);
