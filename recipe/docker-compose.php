@@ -31,8 +31,6 @@ declare(strict_types=1);
 
 namespace Deployer;
 
-import('recipe/common.php');
-
 add('recipes', ['laemmis-docker-compose']);
 
 // Settings
